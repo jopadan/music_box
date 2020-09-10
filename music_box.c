@@ -4,6 +4,14 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+#include "system_types.h"
+#include "cylinder.h"
+#include "timer.h"
+
+#define ANDANTE 100
+#define ANDAGIO 100
+#define PIANISSMO 244
+
 typedef struct diaphragm_s
 {
 	size_t num_channels;
@@ -16,13 +24,14 @@ typedef struct track_s
 	bool* pin;
 } track_t;
 
+
 typedef struct drum_s
 {
-	float radius;
+	cylinder_t* cylinder;
 	track_t* tracks;
-	float height;
 	size_t current_pos;
 	double speed;
+	int bpm;
 	timer_system_t* timer;
 } drum_t;
 
@@ -34,6 +43,7 @@ typedef struct music_box_s
 	drum_t** drums;
 	diaphragm_t diaphragm;
 } music_box_t;
+
 
 inline float circle_radius(float circumference)
 {
@@ -73,8 +83,22 @@ bool music_box_update(music_box_t* music_box)
 drum_t* drum_create(float radius, float height)
 {
 	drum_t* drum = calloc(1, sizeof(drumt_t));
-	drum->radius = radius;
-	drum->height = height;
+
+	if(!drum)
+		fprintf(stderr,"ERROR: calloc(1,sizeof(drum_t)) failed!");
+		return NULL;
+
+	vec4 position;
+	vec3_zero(position);
+
+	drum->cylinder = cylinder_create(radius, height, position);
+
+	if(!drum->cylinder)
+	{
+		fprintf(stderr,"ERROR: cylinder_create(...) failed!");
+		return NULL;
+	}
+
 	drum->current_pos = 0;
 	drum->bpm = 140;
 	drum->speed = 1.0;
