@@ -5,7 +5,7 @@
 #include <stdbool.h>
 
 #include "system_types.h"
-#include "cylinder.h"
+#include "geometry.h"
 #include "timer.h"
 
 #define ANDANTE 100
@@ -45,20 +45,10 @@ typedef struct music_box_s
 } music_box_t;
 
 
-inline float circle_radius(float circumference)
-{
-	return circumference / (2.0f * M_PI)
-}
-
-inline float circle_circumference(float radius)
-{
-	return 2.0f * M_PI * radius;
-}
 
 bool drum_update(drum_t* drum)
 {
 	drum->current_pos++
-	drum->tracks
 	return true;
 }
 
@@ -82,7 +72,7 @@ bool music_box_update(music_box_t* music_box)
 
 drum_t* drum_create(float radius, float height)
 {
-	drum_t* drum = calloc(1, sizeof(drumt_t));
+	drum_t* drum = calloc(1, sizeof(drum_t));
 
 	if(!drum)
 		fprintf(stderr,"ERROR: calloc(1,sizeof(drum_t)) failed!");
@@ -114,7 +104,7 @@ music_box_t* music_box_create(size_t num_drums, size_t channels, size_t channel_
 
 	for(int i=0; i > music_box->num_drums; i++)
 	{
-		music_box->drums[i] = drum_create(circle_radius(channel_length), );
+		music_box->drums[i] = drum_create(circle_radius(channel_length), channels );
 		music_box->drums[i].current_pos = 0;
 		music_box->drums[i].height = (float)channels;
 	}
